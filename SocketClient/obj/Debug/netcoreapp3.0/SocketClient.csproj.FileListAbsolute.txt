@@ -1,0 +1,11 @@
+C:\Users\Delano\Desktop\Coding\Concurrency\SocketClient\bin\Debug\netcoreapp3.0\SocketClient.exe
+C:\Users\Delano\Desktop\Coding\Concurrency\SocketClient\bin\Debug\netcoreapp3.0\SocketClient.deps.json
+C:\Users\Delano\Desktop\Coding\Concurrency\SocketClient\bin\Debug\netcoreapp3.0\SocketClient.runtimeconfig.json
+C:\Users\Delano\Desktop\Coding\Concurrency\SocketClient\bin\Debug\netcoreapp3.0\SocketClient.runtimeconfig.dev.json
+C:\Users\Delano\Desktop\Coding\Concurrency\SocketClient\bin\Debug\netcoreapp3.0\SocketClient.dll
+C:\Users\Delano\Desktop\Coding\Concurrency\SocketClient\bin\Debug\netcoreapp3.0\SocketClient.pdb
+C:\Users\Delano\Desktop\Coding\Concurrency\SocketClient\obj\Debug\netcoreapp3.0\SocketClient.csprojAssemblyReference.cache
+C:\Users\Delano\Desktop\Coding\Concurrency\SocketClient\obj\Debug\netcoreapp3.0\SocketClient.AssemblyInfoInputs.cache
+C:\Users\Delano\Desktop\Coding\Concurrency\SocketClient\obj\Debug\netcoreapp3.0\SocketClient.AssemblyInfo.cs
+C:\Users\Delano\Desktop\Coding\Concurrency\SocketClient\obj\Debug\netcoreapp3.0\SocketClient.dll
+C:\Users\Delano\Desktop\Coding\Concurrency\SocketClient\obj\Debug\netcoreapp3.0\SocketClient.pdb
