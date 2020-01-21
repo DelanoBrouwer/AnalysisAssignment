@@ -3,7 +3,7 @@
  * Mameber 1: [Delano Brouwer, first member]:
  * Mameber 2: [Bastiaan Swam, second member]:
  * Std Number 1: [0960339]
- * Std Number 2: [Student number of the second member] // todo: write here.
+ * Std Number 2: [0966726] // todo: write here.
  * Class: [INF2C]
  ***/
 
@@ -171,12 +171,24 @@ namespace SocketServer
     public class ConcurrentServer : SequentialServer
     {
 
+        byte[] bytes;
+        String data;
+        int numByte;
+        string replyMsg;
+        bool stop;
+        int threadNamer;
+        Thread[] threads = new Thread[250];
+        private Boolean stopCond = false;
+        private int processingTime = 1000;
+        private int listeningQueueSize = 5;
+        
+
         // I'll explain my thought process in the comments. I made the class inherit from the base class
         // so we don't have to rewrite everything. You're free to do so if you're unsure about the inheritance.
         // Not gonna pretend like I know what I'm doing lol.   
 
-    public string processMessage(String msg)
-     // Haven't changed this method just yet. Was going to add semaphores since this one saves the client info.
+        public string processMessage(String msg)
+        // Haven't changed this method just yet. Was going to add semaphores since this one saves the client info.
         {
             Thread.Sleep(processingTime);
             Console.WriteLine("[Server] received from the client -> {0} ", msg);
@@ -213,7 +225,7 @@ namespace SocketServer
 
         public void communicate() { // I thought that it would be good to have this run in every thread.
         // This part is what I think can be done concurrently, after all.
-        Socket connection = listener.Accept();
+            Socket connection = listener.Accept();
             this.sendReply(connection, Message.welcome);
 
             stop = false;
@@ -233,15 +245,17 @@ namespace SocketServer
         }
         public void prepareServer() // Literally just the sequential version with some edits in the While loop.
         {
-            byte[] bytes = new Byte[1024];
-            String data = null;
-            int numByte = 0;
-            string replyMsg = "";
-            bool stop;
-            int threadNamer = 0;
+            bytes = new Byte[1024];
+            data = null;
+            numByte = 0;
+            replyMsg = "";
+            threadNamer = 0;
 
             try
             {
+                for(int i = 0; i < 250; i++) {
+                    threads[i] = new Thread(communicate);
+                }
                 Console.WriteLine("[Server] is ready to start ...");
                 // Establish the local endpoint
                 localEndPoint = new IPEndPoint(ipAddress, portNumber);
@@ -257,7 +271,7 @@ namespace SocketServer
                     Console.WriteLine("Waiting connection ... ");
                     // Suspend while waiting for incoming connection 
 
-                    Thread ("ServerThread" + threadnamer.ToString()) = new Thread(communicate).Start();
+                    threads[threadNamer].Start();
                     
                 }
 
