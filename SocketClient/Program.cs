@@ -47,7 +47,7 @@ namespace SocketClient
             info.classname = " INF2X ";
             info.studentnr = this.baseStdNumber + n.ToString();
             info.ip = "127.0.0.1";
-            info.clientid = finishing ? -1 : 1;
+            info.clientid = -1;//finishing ? -1 : 1;
         }
 
         public string getClientInfo()

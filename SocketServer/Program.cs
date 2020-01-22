@@ -207,6 +207,7 @@ namespace SocketServer
                         if (c.clientid == -1)
                         {
                             stopCond = true;
+                            stop = true;
                             exportResults();
                         }
                         c.secret = c.studentnr + Message.secret;
@@ -225,12 +226,13 @@ namespace SocketServer
 
         public void communicate() { // I thought that it would be good to have this run in every thread.
         // This part is what I think can be done concurrently, after all.
-            Socket connection = listener.Accept();
-            this.sendReply(connection, Message.welcome);
+            
 
-            stop = false;
+            //stop = false;
             while (!stop)
             {
+                Socket connection = listener.Accept();
+                this.sendReply(connection, Message.welcome);
                 numByte = connection.Receive(bytes);
                 data = Encoding.ASCII.GetString(bytes, 0, numByte);
                 replyMsg = processMessage(data);
@@ -266,12 +268,24 @@ namespace SocketServer
                 // This is a non-blocking listen with max number of pending requests
                 listener.Listen(listeningQueueSize);
                 
-                while (true)
+                while (!stop)
                 {
                     Console.WriteLine("Waiting connection ... ");
                     // Suspend while waiting for incoming connection 
-
-                    threads[threadNamer].Start();
+                    for(int i = 0; i < 250; i++) {
+                        if(!stop){
+                            threads[i].Start();
+                        }
+                    }
+                    /*
+                    for(int j = 0; j < 250; j++){
+                        threads
+                    }
+                    */
+                }
+                for(int i = 0; i < 250; i++) {
+                    
+                        threads[i].Abort();
                     
                 }
 
