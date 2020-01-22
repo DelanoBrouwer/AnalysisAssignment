@@ -176,7 +176,7 @@ namespace SocketServer
         int numByte;
         string replyMsg;
         bool stop;
-        int threadNamer;
+        //int threadNamer;
         Thread[] threads = new Thread[250];
         private Boolean stopCond = false;
         private int processingTime = 1000;
@@ -232,6 +232,9 @@ namespace SocketServer
             while (!stop)
             {
                 Socket connection = listener.Accept();
+                if(stop) {
+                    break;
+                }
                 this.sendReply(connection, Message.welcome);
                 numByte = connection.Receive(bytes);
                 data = Encoding.ASCII.GetString(bytes, 0, numByte);
@@ -251,7 +254,8 @@ namespace SocketServer
             data = null;
             numByte = 0;
             replyMsg = "";
-            threadNamer = 0;
+            stop = false;
+            //threadNamer = 0;
 
             try
             {
@@ -268,26 +272,25 @@ namespace SocketServer
                 // This is a non-blocking listen with max number of pending requests
                 listener.Listen(listeningQueueSize);
                 
-                while (!stop)
-                {
+                
                     Console.WriteLine("Waiting connection ... ");
                     // Suspend while waiting for incoming connection 
                     for(int i = 0; i < 250; i++) {
-                        if(!stop){
-                            threads[i].Start();
-                        }
+                        threads[i].Start();
                     }
                     /*
                     for(int j = 0; j < 250; j++){
                         threads
                     }
                     */
-                }
+                
+                
                 for(int i = 0; i < 250; i++) {
-                    
-                        threads[i].Abort();
-                    
+                    if(threads[i].IsAlive){
+                        threads[i].Join();
+                    }
                 }
+                
 
             }
             catch (Exception e)
@@ -308,6 +311,9 @@ namespace SocketServer
         }
         public static void concurrentRun()
         {
+            Console.Out.WriteLine("[Server] A sample server, concurrent version ...");
+            ConcurrentServer cServer = new ConcurrentServer();
+            cServer.prepareServer();
             // todo: After finishing the concurrent version of the server, implement this method to start the concurrent server
         }
     }
@@ -316,10 +322,10 @@ namespace SocketServer
         // Main Method 
         static void Main(string[] args)
         {
-            Console.Clear();
-            ServerSimulator.sequentialRun();
+            //Console.Clear();
+            //ServerSimulator.sequentialRun();
             // todo: uncomment this when the solution is ready.
-            //ServerSimulator.concurrentRun();
+            ServerSimulator.concurrentRun();
         }
 
     }
