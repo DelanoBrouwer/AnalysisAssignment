@@ -20,3 +20,14 @@ C:\Users\Bato9\Desktop\A6 assignment\AnalysisAssignment\SocketServer\bin\Debug\n
 C:\Users\Bato9\Desktop\A6 assignment\AnalysisAssignment\SocketServer\bin\Debug\netcoreapp3.0\SocketServer.runtimeconfig.dev.json
 C:\Users\Bato9\Desktop\A6 assignment\AnalysisAssignment\SocketServer\bin\Debug\netcoreapp3.0\SocketServer.dll
 C:\Users\Bato9\Desktop\A6 assignment\AnalysisAssignment\SocketServer\bin\Debug\netcoreapp3.0\SocketServer.pdb
+C:\Users\Delano\Desktop\Coding\AnalysisAssignment\SocketServer\bin\Debug\netcoreapp3.0\SocketServer.exe
+C:\Users\Delano\Desktop\Coding\AnalysisAssignment\SocketServer\bin\Debug\netcoreapp3.0\SocketServer.deps.json
+C:\Users\Delano\Desktop\Coding\AnalysisAssignment\SocketServer\bin\Debug\netcoreapp3.0\SocketServer.runtimeconfig.json
+C:\Users\Delano\Desktop\Coding\AnalysisAssignment\SocketServer\bin\Debug\netcoreapp3.0\SocketServer.runtimeconfig.dev.json
+C:\Users\Delano\Desktop\Coding\AnalysisAssignment\SocketServer\bin\Debug\netcoreapp3.0\SocketServer.dll
+C:\Users\Delano\Desktop\Coding\AnalysisAssignment\SocketServer\bin\Debug\netcoreapp3.0\SocketServer.pdb
+C:\Users\Delano\Desktop\Coding\AnalysisAssignment\SocketServer\obj\Debug\netcoreapp3.0\SocketServer.csprojAssemblyReference.cache
+C:\Users\Delano\Desktop\Coding\AnalysisAssignment\SocketServer\obj\Debug\netcoreapp3.0\SocketServer.AssemblyInfoInputs.cache
+C:\Users\Delano\Desktop\Coding\AnalysisAssignment\SocketServer\obj\Debug\netcoreapp3.0\SocketServer.AssemblyInfo.cs
+C:\Users\Delano\Desktop\Coding\AnalysisAssignment\SocketServer\obj\Debug\netcoreapp3.0\SocketServer.dll
+C:\Users\Delano\Desktop\Coding\AnalysisAssignment\SocketServer\obj\Debug\netcoreapp3.0\SocketServer.pdb

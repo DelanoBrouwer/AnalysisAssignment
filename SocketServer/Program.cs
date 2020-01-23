@@ -181,14 +181,8 @@ namespace SocketServer
         private Boolean stopCond = false;
         private int processingTime = 1000;
         private int listeningQueueSize = 5;
-        
-
-        // I'll explain my thought process in the comments. I made the class inherit from the base class
-        // so we don't have to rewrite everything. You're free to do so if you're unsure about the inheritance.
-        // Not gonna pretend like I know what I'm doing lol.   
 
         public string processMessage(String msg)
-        // Haven't changed this method just yet. Was going to add semaphores since this one saves the client info.
         {
             Thread.Sleep(processingTime);
             Console.WriteLine("[Server] received from the client -> {0} ", msg);
@@ -223,8 +217,7 @@ namespace SocketServer
             return replyMsg;
         }
 
-        public void communicate() { // I thought that it would be good to have this run in every thread.
-        // This part is what I think can be done concurrently, after all.
+        public void communicate() { 
             Socket connection = listener.Accept();
             this.sendReply(connection, Message.welcome);
 
@@ -242,8 +235,9 @@ namespace SocketServer
                 else
                     this.sendReply(connection, replyMsg);
             }
+
         }
-        public void prepareServer() // Literally just the sequential version with some edits in the While loop.
+        public void prepareServer() 
         {
             bytes = new Byte[1024];
             data = null;
@@ -253,9 +247,6 @@ namespace SocketServer
 
             try
             {
-                for(int i = 0; i < 250; i++) {
-                    threads[i] = new Thread(communicate);
-                }
                 Console.WriteLine("[Server] is ready to start ...");
                 // Establish the local endpoint
                 localEndPoint = new IPEndPoint(ipAddress, portNumber);
@@ -265,12 +256,16 @@ namespace SocketServer
                 listener.Bind(localEndPoint);
                 // This is a non-blocking listen with max number of pending requests
                 listener.Listen(listeningQueueSize);
-                
+                for(int i = 0; i < 250; i++) {
+                    threads[i] = new Thread(communicate);
+                }
                 while (true)
                 {
                     Console.WriteLine("Waiting connection ... ");
                     // Suspend while waiting for incoming connection 
 
+                    // -=[Important:]=- We should make the program wait until a connection comes in instead of 
+                    // rapidly creating threads before anything even happens.
                     threads[threadNamer].Start();
                     
                 }
@@ -294,7 +289,9 @@ namespace SocketServer
         }
         public static void concurrentRun()
         {
-            // todo: After finishing the concurrent version of the server, implement this method to start the concurrent server
+            Console.Out.WriteLine("[Server] A sample server, concurrent version ...");
+            ConcurrentServer server = new ConcurrentServer();
+            server.prepareServer();
         }
     }
     class Program
@@ -303,9 +300,9 @@ namespace SocketServer
         static void Main(string[] args)
         {
             Console.Clear();
-            ServerSimulator.sequentialRun();
+            //ServerSimulator.sequentialRun();
             // todo: uncomment this when the solution is ready.
-            //ServerSimulator.concurrentRun();
+            ServerSimulator.concurrentRun();
         }
 
     }
