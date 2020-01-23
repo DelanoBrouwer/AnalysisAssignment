@@ -183,12 +183,30 @@ namespace SocketServer
         private int listeningQueueSize = 5;
         
 
-        // I'll explain my thought process in the comments. I made the class inherit from the base class
-        // so we don't have to rewrite everything. You're free to do so if you're unsure about the inheritance.
-        // Not gonna pretend like I know what I'm doing lol.   
+        public void printClients()
+        {
+            string delimiter = " , ";
+            Console.Out.WriteLine("[Server] This is the list of clients communicated");
+            foreach (ClientInfo c in clients)
+            {
+                Console.WriteLine(c.classname + delimiter + c.studentnr + delimiter + c.clientid.ToString());
+            }
+            Console.Out.WriteLine("[Server] Number of handled clients: {0}", clients.Count);
+
+            clients.Clear();
+            stopCond = false;
+
+        }
+
+        public void exportResults()
+        {
+            if (stopCond) // By redefining the function here, the function looks at the correct stopCond.
+            {
+                this.printClients();
+            }
+        }   
 
         public string processMessage(String msg)
-        // Haven't changed this method just yet. Was going to add semaphores since this one saves the client info.
         {
             Thread.Sleep(processingTime);
             Console.WriteLine("[Server] received from the client -> {0} ", msg);
@@ -223,8 +241,7 @@ namespace SocketServer
             return replyMsg;
         }
 
-        public void communicate() { // I thought that it would be good to have this run in every thread.
-        // This part is what I think can be done concurrently, after all.
+        public void communicate() { 
             bool locStop = false;
 
             //stop = false;
@@ -251,7 +268,7 @@ namespace SocketServer
                 }
             }
         }
-        public void prepareServer() // Literally just the sequential version with some edits in the While loop.
+        public void prepareServer()
         {
             bytes = new Byte[1024];
             data = null;
@@ -292,8 +309,9 @@ namespace SocketServer
                 }
                 listener.Close();
                 //listener gets closed here, so exportResults() here
+                stopCond = true;
+                for(int i = 0; i < threads.Length; i++){threads[i].Join(2000);} //Prevents errors in exportResults. Timeout after 2000ms.
                 exportResults();
-
             }
             catch (Exception e)
             {
