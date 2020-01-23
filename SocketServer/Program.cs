@@ -200,20 +200,19 @@ namespace SocketServer
                 {
                     case Message.stopCommunication:
                         replyMsg = Message.stopCommunication;
-                        break;
+                        return replyMsg;
                     default:
                         ClientInfo c = JsonSerializer.Deserialize<ClientInfo>(msg.ToString());
                         clients.AddLast(c);
                         if (c.clientid == -1)
                         {
                             stopCond = true;
-                            stop = true;
                             exportResults();
                         }
                         c.secret = c.studentnr + Message.secret;
                         c.status = Message.statusEnd;
                         replyMsg = JsonSerializer.Serialize<ClientInfo>(c);
-                        break;
+                        return replyMsg;
                 }
             }
             catch (Exception e)
@@ -226,26 +225,30 @@ namespace SocketServer
 
         public void communicate() { // I thought that it would be good to have this run in every thread.
         // This part is what I think can be done concurrently, after all.
-            
+            bool locStop = false;
 
             //stop = false;
-            while (!stop)
+            while (!locStop)
             {
-                Socket connection = listener.Accept();
-                if(stop) {
+                try{
+                    Socket connection = listener.Accept();
+                    
+                    this.sendReply(connection, Message.welcome);
+                    numByte = connection.Receive(bytes);
+                    data = Encoding.ASCII.GetString(bytes, 0, numByte);
+                    replyMsg = processMessage(data);
+                    if (replyMsg.Equals(Message.stopCommunication))
+                    {
+                        locStop = true;
+                        break;
+                    }
+                    else
+                        this.sendReply(connection, replyMsg);
+                }
+                catch{
+                    //listener doesn't listen anymore, so catch the error and break from the loop
                     break;
                 }
-                this.sendReply(connection, Message.welcome);
-                numByte = connection.Receive(bytes);
-                data = Encoding.ASCII.GetString(bytes, 0, numByte);
-                replyMsg = processMessage(data);
-                if (replyMsg.Equals(Message.stopCommunication))
-                {
-                    stop = true;
-                    break;
-                }
-                else
-                    this.sendReply(connection, replyMsg);
             }
         }
         public void prepareServer() // Literally just the sequential version with some edits in the While loop.
@@ -254,13 +257,15 @@ namespace SocketServer
             data = null;
             numByte = 0;
             replyMsg = "";
-            stop = false;
+            stopCond = false;
             //threadNamer = 0;
 
             try
             {
+                
                 for(int i = 0; i < 250; i++) {
                     threads[i] = new Thread(communicate);
+                    threads[i].IsBackground = true;
                 }
                 Console.WriteLine("[Server] is ready to start ...");
                 // Establish the local endpoint
@@ -271,26 +276,23 @@ namespace SocketServer
                 listener.Bind(localEndPoint);
                 // This is a non-blocking listen with max number of pending requests
                 listener.Listen(listeningQueueSize);
+                Console.WriteLine("Waiting connection ... ");
+                while(!stopCond){
                 
-                
-                    Console.WriteLine("Waiting connection ... ");
+                    
                     // Suspend while waiting for incoming connection 
                     for(int i = 0; i < 250; i++) {
-                        threads[i].Start();
+                        if(!threads[i].IsAlive){
+                            threads[i] = new Thread(communicate);
+                            threads[i].Start();
+                        }
+                        
                     }
-                    /*
-                    for(int j = 0; j < 250; j++){
-                        threads
-                    }
-                    */
                 
-                
-                for(int i = 0; i < 250; i++) {
-                    if(threads[i].IsAlive){
-                        threads[i].Join();
-                    }
                 }
-                
+                listener.Close();
+                //listener gets closed here, so exportResults() here
+                exportResults();
 
             }
             catch (Exception e)
@@ -326,6 +328,7 @@ namespace SocketServer
             //ServerSimulator.sequentialRun();
             // todo: uncomment this when the solution is ready.
             ServerSimulator.concurrentRun();
+            //Console.WriteLine("No idea where stuck");
         }
 
     }
