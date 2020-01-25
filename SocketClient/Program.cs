@@ -195,7 +195,7 @@ namespace SocketClient
         static void Main(string[] args)
         {
             Console.Clear();
-            int wt = 5000, nc = 1000;
+            int wt = 10000, nc = 100;
             ClientsSimulator clientsSimulator = new ClientsSimulator(nc, wt);
             clientsSimulator.SequentialSimulation();
             Thread.Sleep(wt);

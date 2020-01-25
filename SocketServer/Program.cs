@@ -181,6 +181,8 @@ namespace SocketServer
         private Boolean stopCond = false;
         private int processingTime = 1000;
         private int listeningQueueSize = 5;
+        private Mutex mut = new Mutex();
+        private Mutex mut2 = new Mutex();
         
 
         public void printClients()
@@ -221,7 +223,9 @@ namespace SocketServer
                         return replyMsg;
                     default:
                         ClientInfo c = JsonSerializer.Deserialize<ClientInfo>(msg.ToString());
+                        mut2.WaitOne();
                         clients.AddLast(c);
+                        mut2.ReleaseMutex();
                         if (c.clientid == -1)
                         {
                             stopCond = true;
@@ -248,11 +252,15 @@ namespace SocketServer
             while (!locStop)
             {
                 try{
+                    mut.WaitOne();
                     Socket connection = listener.Accept();
                     
                     this.sendReply(connection, Message.welcome);
+                    
                     numByte = connection.Receive(bytes);
+                    
                     data = Encoding.ASCII.GetString(bytes, 0, numByte);
+                    mut.ReleaseMutex();
                     replyMsg = processMessage(data);
                     if (replyMsg.Equals(Message.stopCommunication))
                     {
