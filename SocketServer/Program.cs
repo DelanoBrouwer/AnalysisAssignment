@@ -3,7 +3,7 @@
  * Mameber 1: [Delano Brouwer, first member]:
  * Mameber 2: [Bastiaan Swam, second member]:
  * Std Number 1: [0960339]
- * Std Number 2: [0966726] // todo: write here.
+ * Std Number 2: [0966726]
  * Class: [INF2C]
  ***/
 
@@ -176,11 +176,36 @@ namespace SocketServer
         int numByte;
         string replyMsg;
         bool stop;
-        int threadNamer;
         Thread[] threads = new Thread[250];
         private Boolean stopCond = false;
         private int processingTime = 1000;
         private int listeningQueueSize = 5;
+        private Mutex mut = new Mutex();
+        private Mutex mut2 = new Mutex();
+        
+
+        public void printClients()
+        {
+            string delimiter = " , ";
+            Console.Out.WriteLine("[Server] This is the list of clients communicated");
+            foreach (ClientInfo c in clients)
+            {
+                Console.WriteLine(c.classname + delimiter + c.studentnr + delimiter + c.clientid.ToString());
+            }
+            Console.Out.WriteLine("[Server] Number of handled clients: {0}", clients.Count);
+
+            clients.Clear();
+            stopCond = false;
+
+        }
+
+        public void exportResults()
+        {
+            if (stopCond) // By redefining the function here, the function looks at the correct stopCond.
+            {
+                this.printClients();
+            }
+        }   
 
         public string processMessage(String msg)
         {
@@ -194,10 +219,12 @@ namespace SocketServer
                 {
                     case Message.stopCommunication:
                         replyMsg = Message.stopCommunication;
-                        break;
+                        return replyMsg;
                     default:
                         ClientInfo c = JsonSerializer.Deserialize<ClientInfo>(msg.ToString());
+                        mut2.WaitOne();
                         clients.AddLast(c);
+                        mut2.ReleaseMutex();
                         if (c.clientid == -1)
                         {
                             stopCond = true;
@@ -206,7 +233,7 @@ namespace SocketServer
                         c.secret = c.studentnr + Message.secret;
                         c.status = Message.statusEnd;
                         replyMsg = JsonSerializer.Serialize<ClientInfo>(c);
-                        break;
+                        return replyMsg;
                 }
             }
             catch (Exception e)
@@ -218,35 +245,51 @@ namespace SocketServer
         }
 
         public void communicate() { 
-            Socket connection = listener.Accept();
-            this.sendReply(connection, Message.welcome);
+            bool locStop = false;
 
-            stop = false;
-            while (!stop)
+            while (!locStop)
             {
-                numByte = connection.Receive(bytes);
-                data = Encoding.ASCII.GetString(bytes, 0, numByte);
-                replyMsg = processMessage(data);
-                if (replyMsg.Equals(Message.stopCommunication))
-                {
-                    stop = true;
+                try{
+                    mut.WaitOne();
+                    Socket connection = listener.Accept();
+                    
+                    this.sendReply(connection, Message.welcome);
+                    
+                    numByte = connection.Receive(bytes);
+                    
+                    data = Encoding.ASCII.GetString(bytes, 0, numByte);
+                    mut.ReleaseMutex();
+                    replyMsg = processMessage(data);
+                    if (replyMsg.Equals(Message.stopCommunication))
+                    {
+                        locStop = true;
+                        break;
+                    }
+                    else
+                        this.sendReply(connection, replyMsg);
+                }
+                catch{
+                    //listener doesn't listen anymore, so catch the error and break from the loop
                     break;
                 }
-                else
-                    this.sendReply(connection, replyMsg);
             }
 
         }
-        public void prepareServer() 
+        public void prepareServer()
         {
             bytes = new Byte[1024];
             data = null;
             numByte = 0;
             replyMsg = "";
-            threadNamer = 0;
+            stopCond = false;
 
             try
             {
+                
+                for(int i = 0; i < 250; i++) {
+                    threads[i] = new Thread(communicate);
+                    threads[i].IsBackground = true;
+                }
                 Console.WriteLine("[Server] is ready to start ...");
                 // Establish the local endpoint
                 localEndPoint = new IPEndPoint(ipAddress, portNumber);
@@ -256,18 +299,25 @@ namespace SocketServer
                 listener.Bind(localEndPoint);
                 // This is a non-blocking listen with max number of pending requests
                 listener.Listen(listeningQueueSize);
-                for(int i = 0; i < 250; i++) {
-                    threads[i] = new Thread(communicate);
-                }
-                while (true)
-                {
-                    Console.WriteLine("Waiting connection ... ");
-                    // Suspend while waiting for incoming connection 
-
-                    threads[threadNamer].Start();
+                Console.WriteLine("Waiting connection ... ");
+                while(!stopCond){
+                
                     
+                    // Suspend while waiting for incoming connection 
+                    for(int i = 0; i < 250; i++) {
+                        if(!threads[i].IsAlive){
+                            threads[i] = new Thread(communicate);
+                            threads[i].Start();
+                        }
+                        
+                    }
+                
                 }
-
+                listener.Close();
+                //listener gets closed here, so exportResults() here
+                stopCond = true;
+                for(int i = 0; i < threads.Length; i++){threads[i].Join(2000);} //Prevents errors in exportResults. Timeout after 2000ms.
+                exportResults();
             }
             catch (Exception e)
             {
@@ -288,8 +338,8 @@ namespace SocketServer
         public static void concurrentRun()
         {
             Console.Out.WriteLine("[Server] A sample server, concurrent version ...");
-            ConcurrentServer server = new ConcurrentServer();
-            server.prepareServer();
+            ConcurrentServer cServer = new ConcurrentServer();
+            cServer.prepareServer();
         }
     }
     class Program
@@ -297,9 +347,7 @@ namespace SocketServer
         // Main Method 
         static void Main(string[] args)
         {
-            Console.Clear();
             //ServerSimulator.sequentialRun();
-            // todo: uncomment this when the solution is ready.
             ServerSimulator.concurrentRun();
         }
 

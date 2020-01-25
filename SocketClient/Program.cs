@@ -38,8 +38,6 @@ namespace SocketClient
         public int waitingTime = 0;
         string baseStdNumber = "0700";
 
-        private String msgToSend;
-
         public Client(bool finishing, int n)
         {
             waitingTime = new Random().Next(minWaitingTime, maxWaitingTime);
@@ -152,30 +150,37 @@ namespace SocketClient
         private Client[] clients;
         public readonly int waitingTimeForStop = 2000;
 
+        Thread[] threads;
 
         public ClientsSimulator(int n, int t)
         {
             numberOfClients = n;
             clients = new Client[numberOfClients];
+            threads = new Thread[numberOfClients];
+
             for (int i = 0; i < numberOfClients; i++)
             {
                 clients[i] = new Client(false, i);
             }
         }
 
-        public void SequentialSimulation()
-        {
-            Console.Out.WriteLine("\n[ClientSimulator] Sequential simulator is going to start ...");
-            for (int i = 0; i < numberOfClients; i++)
-            {
+        public void Runner(int i){
                 clients[i].prepareClient();
                 clients[i].startCommunication();
                 clients[i].endCommunication();
             }
+        public void SequentialSimulation()
+        {
+            Console.Out.WriteLine("\n[ClientSimulator] Concurrent simulator is going to start ...");
+            for(int i = 0; i < numberOfClients; i++) {
+                    threads[i] = new Thread(()=>Runner(i));
+                    threads[i].IsBackground = true;
+                    threads[i].Start();
+                    Thread.Sleep(10); // Required to prevent errors. Without a sleep statement, the instantiation of threads will go to fast.
+                }
 
             Console.Out.WriteLine("\n[ClientSimulator] All clients finished with their communications ... ");
-
-            Thread.Sleep(waitingTimeForStop);
+            for(int i = 0; i < numberOfClients; i++){threads[i].Join(2000);} //Prevents errors in exportResults. Timeout after 2000ms.
 
             Client endClient = new Client(true, -1);
             endClient.prepareClient();
@@ -183,13 +188,6 @@ namespace SocketClient
             endClient.endCommunication();
         }
 
-        public void ConcurrentSimulation()
-        {
-            Console.Out.WriteLine("[ClientSimulator] Concurrent simulator is going to start ...");
-            // todo: In order to test the final solution, it is recommended to implement this method.
-
-
-        }
     }
     class Program
     {
@@ -197,12 +195,11 @@ namespace SocketClient
         static void Main(string[] args)
         {
             Console.Clear();
-            int wt = 5000, nc = 20;
+            int wt = 10000, nc = 2500;
             ClientsSimulator clientsSimulator = new ClientsSimulator(nc, wt);
             clientsSimulator.SequentialSimulation();
             Thread.Sleep(wt);
-            // todo: Uncomment this, after finishing the method.
-            //clientsSimulator.ConcurrentSimulation();
+            // Screw it. I'm just turning the sequential simulator into the concurrent one.
 
         }
     }
