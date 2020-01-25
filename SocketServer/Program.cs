@@ -264,8 +264,6 @@ namespace SocketServer
                     Console.WriteLine("Waiting connection ... ");
                     // Suspend while waiting for incoming connection 
 
-                    // -=[Important:]=- We should make the program wait until a connection comes in instead of 
-                    // rapidly creating threads before anything even happens.
                     threads[threadNamer].Start();
                     
                 }
