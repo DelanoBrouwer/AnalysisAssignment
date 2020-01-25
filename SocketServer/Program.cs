@@ -3,7 +3,7 @@
  * Mameber 1: [Delano Brouwer, first member]:
  * Mameber 2: [Bastiaan Swam, second member]:
  * Std Number 1: [0960339]
- * Std Number 2: [0966726] // todo: write here.
+ * Std Number 2: [0966726]
  * Class: [INF2C]
  ***/
 
@@ -176,7 +176,6 @@ namespace SocketServer
         int numByte;
         string replyMsg;
         bool stop;
-        //int threadNamer;
         Thread[] threads = new Thread[250];
         private Boolean stopCond = false;
         private int processingTime = 1000;
@@ -248,7 +247,6 @@ namespace SocketServer
         public void communicate() { 
             bool locStop = false;
 
-            //stop = false;
             while (!locStop)
             {
                 try{
@@ -283,7 +281,6 @@ namespace SocketServer
             numByte = 0;
             replyMsg = "";
             stopCond = false;
-            //threadNamer = 0;
 
             try
             {
@@ -342,7 +339,6 @@ namespace SocketServer
             Console.Out.WriteLine("[Server] A sample server, concurrent version ...");
             ConcurrentServer cServer = new ConcurrentServer();
             cServer.prepareServer();
-            // todo: After finishing the concurrent version of the server, implement this method to start the concurrent server
         }
     }
     class Program
@@ -350,11 +346,8 @@ namespace SocketServer
         // Main Method 
         static void Main(string[] args)
         {
-            //Console.Clear();
             //ServerSimulator.sequentialRun();
-            // todo: uncomment this when the solution is ready.
             ServerSimulator.concurrentRun();
-            //Console.WriteLine("No idea where stuck");
         }
 
     }

@@ -176,7 +176,7 @@ namespace SocketClient
                     threads[i] = new Thread(()=>Runner(i));
                     threads[i].IsBackground = true;
                     threads[i].Start();
-                    Thread.Sleep(10);
+                    Thread.Sleep(10); // Required to prevent errors. Without a sleep statement, the instantiation of threads will go to fast.
                 }
 
             Console.Out.WriteLine("\n[ClientSimulator] All clients finished with their communications ... ");
@@ -195,7 +195,7 @@ namespace SocketClient
         static void Main(string[] args)
         {
             Console.Clear();
-            int wt = 10000, nc = 100;
+            int wt = 10000, nc = 2500;
             ClientsSimulator clientsSimulator = new ClientsSimulator(nc, wt);
             clientsSimulator.SequentialSimulation();
             Thread.Sleep(wt);

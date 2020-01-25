@@ -1,30 +1,28 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Bato9\\Desktop\\A6 assignment\\AnalysisAssignment\\SocketClient\\SocketClient.csproj": {}
+    "C:\\Users\\Delano\\Desktop\\Coding\\AnalysisAssignment\\SocketClient\\SocketClient.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Bato9\\Desktop\\A6 assignment\\AnalysisAssignment\\SocketClient\\SocketClient.csproj": {
+    "C:\\Users\\Delano\\Desktop\\Coding\\AnalysisAssignment\\SocketClient\\SocketClient.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Bato9\\Desktop\\A6 assignment\\AnalysisAssignment\\SocketClient\\SocketClient.csproj",
+        "projectUniqueName": "C:\\Users\\Delano\\Desktop\\Coding\\AnalysisAssignment\\SocketClient\\SocketClient.csproj",
         "projectName": "SocketClient",
-        "projectPath": "C:\\Users\\Bato9\\Desktop\\A6 assignment\\AnalysisAssignment\\SocketClient\\SocketClient.csproj",
-        "packagesPath": "C:\\Users\\Bato9\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Bato9\\Desktop\\A6 assignment\\AnalysisAssignment\\SocketClient\\obj\\",
+        "projectPath": "C:\\Users\\Delano\\Desktop\\Coding\\AnalysisAssignment\\SocketClient\\SocketClient.csproj",
+        "packagesPath": "C:\\Users\\Delano\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Delano\\Desktop\\Coding\\AnalysisAssignment\\SocketClient\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+          "C:\\Program Files (x86)\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Bato9\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\Delano\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -50,30 +48,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[3.0.1, 3.0.1]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[3.0.1, 3.0.1]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[3.0.0, 3.0.0]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[3.0.0, 3.0.0]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files (x86)\\dotnet\\sdk\\3.0.101\\RuntimeIdentifierGraph.json"
         }
       }
     }
